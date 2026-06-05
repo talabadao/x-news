@@ -3,11 +3,17 @@ name: Daily SEO & AI Digest
 on:
   schedule:
     - cron: "0 1 * * *"   # 8:00 sáng ICT (UTC+7)
-  workflow_dispatch:        # Cho phép chạy tay
+  workflow_dispatch:
+
+permissions:
+  contents: write        # ← FIX lỗi git exit code 128
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true   # ← FIX cảnh báo Node.js 20
 
     steps:
       - name: Checkout repo
