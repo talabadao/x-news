@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="description" content="Daily SEO & AI digest from top experts on X"/>
+<title>SEO & AI Digest · Daily Report</title>
+<style>
+:root {
+  --bg:        #0d1117;
+  --surface:   #161b22;
+  --surface2:  #1e2530;
+  --border:    #30363d;
+  --border2:   #21262d;
+  --primary:   #4f9cf9;
+  --purple:    #a855f7;
+  --green:     #10b981;
+  --yellow:    #f59e0b;
+  --red:       #ef4444;
+  --text:      #e6edf3;
+  --text2:     #8b949e;
+  --text3:     #656d76;
+  --radius:    12px;
+  --radius-sm: 8px;
+  --shadow:    0 4px 24px rgba(0,0,0,.4);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.5;font-size:15px;min-height:100vh}
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ── Layout ── */
+.app{display:flex;flex-direction:column;min-height:100vh}
+
+/* ── Header ── */
+.header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(13,17,23,.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border2);
+  padding:0 20px;
+  display:flex;align-items:center;gap:12px;height:56px;
+}
+.header-logo{font-size:22px;margin-right:4px}
+.header-title{font-size:17px;font-weight:700;white-space:nowrap;
+  background:linear-gradient(90deg,var(--primary),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header-meta{margin-left:auto;font-size:12px;color:var(--text2);text-align:right}
+.header-dot{display:inline-block;width:7px;height:7px;border-radius:50%;
+  background:var(--green);animation:pulse 2s infinite;margin-right:4px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── Stats bar ── */
+.stats-bar{
+  display:flex;gap:12px;padding:16px 20px;
+  overflow-x:auto;border-bottom:1px solid var(--border2);
+  background:var(--surface);
+}
+.stat-card{
+  flex:0 0 auto;background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:12px 20px;min-width:120px;text-align:center;
+  transition:border-color .2s;
+}
+.stat-card:hover{border-color:var(--primary)}
+.stat-num{font-size:26px;font-weight:800;color:var(--text)}
+.stat-label{font-size:11px;color:var(--text2);margin-top:2px;text-transform:uppercase;letter-spacing:.06em}
+
+/* ── Toolbar ── */
+.toolbar{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 20px;border-bottom:1px solid var(--border2);
+  flex-wrap:wrap;
+}
+.search-wrap{position:relative;flex:1;min-width:180px;max-width:340px}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);
+  width:14px;height:14px;fill:var(--text3);pointer-events:none}
+#searchInput{
+  width:100%;background:var(--surface2);border:1px solid var(--border);
+  border-radius:20px;padding:7px 12px 7px 32px;color:var(--text);
+  font-size:13px;outline:none;transition:border-color .2s;
+}
+#searchInput:focus{border-color:var(--primary)}
+#searchInput::placeholder{color:var(--text3)}
+.sort-btn{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:20px;padding:7px 14px;font-size:12px;color:var(--text2);
+  cursor:pointer;transition:all .2s;white-space:nowrap;
+}
+.sort-btn:hover,.sort-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+/* ── Tabs ── */
+.tabs{display:flex;gap:4px;padding:0 20px;
+  border-bottom:1px solid var(--border2);background:var(--surface)}
+.tab{
+  padding:12px 16px;font-size:13px;font-weight:500;cursor:pointer;
+  border-bottom:2px solid transparent;color:var(--text2);
+  transition:all .2s;white-space:nowrap;
+}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+
+/* ── Main content ── */
+.main{flex:1;padding:20px;max-width:1200px;margin:0 auto;width:100%}
+
+/* ── Panel ── */
+.panel{display:none}
+.panel.active{display:block}
+
+/* ── Tweet grid ── */
+.tweet-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:14px;
+}
+
+/* ── Tweet card ── */
+.tweet-card{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--radius);padding:16px;
+  transition:border-color .2s,transform .15s;
+  display:flex;flex-direction:column;gap:10px;
+  cursor:pointer;
+}
+.tweet-card:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:var(--shadow)}
+.tweet-header{display:flex;align-items:center;gap:10px}
+.avatar{
+  width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;
+  background:var(--surface2);border:2px solid var(--border);
+}
+.avatar-placeholder{
+  width:40px;height:40px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--primary),var(--purple));
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;color:#fff;letter-spacing:.02em;
+}
+.tweet-author{flex:1;min-width:0}
+.author-name{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.author-handle{font-size:12px;color:var(--text2)}
+.tweet-time{font-size:11px;color:var(--text3);white-space:nowrap}
+.tweet-body{font-size:13.5px;line-height:1.6;color:var(--text);
+  overflow-wrap:break-word;word-break:break-word}
+.tweet-link{color:var(--primary)}
+.tweet-mention{color:var(--primary)}
+.tweet-hashtag{color:var(--purple)}
+.tweet-footer{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.metric{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text2)}
+.metric svg{width:13px;height:13px;opacity:.7}
+.category-badge{
+  margin-left:auto;font-size:10px;font-weight:600;
+  padding:2px 8px;border-radius:10px;background:var(--surface2);
+  color:var(--text2);border:1px solid var(--border);
+  white-space:nowrap;
+}
+
+/* ── Expert list ── */
+.expert-section{margin-bottom:28px}
+.expert-header{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 16px;background:var(--surface);
+  border:1px solid var(--border2);border-radius:var(--radius);
+  margin-bottom:12px;cursor:pointer;transition:border-color .2s;
+}
+.expert-header:hover{border-color:var(--primary)}
+.expert-avatar{width:44px;height:44px;border-radius:50%;object-fit:cover;
+  background:var(--surface2);border:2px solid var(--border);flex-shrink:0}
+.expert-avatar-ph{width:44px;height:44px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--primary),var(--purple));
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:700;color:#fff}
+.expert-info{flex:1;min-width:0}
+.expert-name{font-weight:700;font-size:15px}
+.expert-sub{font-size:12px;color:var(--text2)}
+.expert-count{font-size:12px;color:var(--text2);text-align:right;flex-shrink:0}
+.expert-tweets{display:none}
+.expert-tweets.open{display:block}
+
+/* ── Topic header ── */
+.topic-header{
+  display:flex;align-items:center;gap:10px;
+  padding:14px 16px;background:var(--surface);
+  border-radius:var(--radius) var(--radius) 0 0;
+  border:1px solid var(--border2);
+  margin-bottom:0;
+}
+.topic-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.topic-label{font-weight:700;font-size:15px}
+.topic-count{font-size:12px;color:var(--text2);margin-left:auto}
+.topic-section{
+  border:1px solid var(--border2);border-radius:var(--radius);
+  margin-bottom:24px;overflow:hidden;
+}
+.topic-body{padding:16px;display:flex;flex-direction:column;gap:12px}
+
+/* ── Empty state ── */
+.empty{
+  text-align:center;padding:60px 20px;color:var(--text2);
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--radius);
+}
+.empty .e-icon{font-size:40px;margin-bottom:12px}
+
+/* ── Footer ── */
+.footer{
+  text-align:center;padding:20px;font-size:12px;color:var(--text3);
+  border-top:1px solid var(--border2);margin-top:20px;
+}
+
+/* ── Responsive ── */
+@media(max-width:640px){
+  .header-meta{display:none}
+  .tweet-grid{grid-template-columns:1fr}
+  .stats-bar{gap:8px;padding:12px}
+  .stat-num{font-size:20px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ── Header ── -->
+<header class="header">
+  <span class="header-logo">📡</span>
+  <span class="header-title">SEO &amp; AI Daily Digest</span>
+  <div class="header-meta">
+    <span class="header-dot"></span>
+    Updated: Jun 05, 2026 — 09:19 UTC
+  </div>
+</header>
+
+<!-- ── Stats ── -->
+<div class="stats-bar">
+  <div class="stat-card">
+    <div class="stat-num" id="st-tweets">12</div>
+    <div class="stat-label">Tweets</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num" id="st-experts">5</div>
+    <div class="stat-label">Experts</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">72h</div>
+    <div class="stat-label">Window</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">4</div>
+    <div class="stat-label">Topics</div>
+  </div>
+</div>
+
+<!-- ── Toolbar ── -->
+<div class="toolbar">
+  <div class="search-wrap">
+    <svg viewBox="0 0 20 20"><path d="M12.9 14.32a8 8 0 1 1 1.41-1.41l3.9 3.88-1.42 1.42-3.89-3.89zM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"/></svg>
+    <input id="searchInput" type="text" placeholder="Search tweets, users, hashtags…"/>
+  </div>
+  <button class="sort-btn active" data-sort="newest" onclick="setSort(this)">⏰ Newest</button>
+  <button class="sort-btn" data-sort="top"    onclick="setSort(this)">🔥 Top</button>
+</div>
+
+<!-- ── Tabs ── -->
+<nav class="tabs">
+  <div class="tab active" onclick="showTab('all')">🏠 All Feed</div>
+  <div class="tab"        onclick="showTab('experts')">👥 Experts</div>
+  <div class="tab"        onclick="showTab('topics')">🔍 Topics</div>
+</nav>
+
+<!-- ── Main ── -->
+<main class="main">
+
+  <!-- All feed -->
+  <section class="panel active" id="panel-all">
+    <div class="tweet-grid" id="all-grid"></div>
+    <div id="all-empty" class="empty" style="display:none">
+      <div class="e-icon">🔍</div>
+      <div>No tweets match your search.</div>
+    </div>
+  </section>
+
+  <!-- Experts -->
+  <section class="panel" id="panel-experts">
+    <div id="experts-container"></div>
+  </section>
+
+  <!-- Topics -->
+  <section class="panel" id="panel-topics">
+    <div id="topics-container"></div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  Generated automatically by GitHub Actions · X API v2 · Last run: Jun 05, 2026 — 09:19 UTC
+</footer>
+</div>
+
+<!-- ── Embedded data ── -->
+<script>
+const DATA = {"meta": {"generated_at": "Jun 05, 2026 — 09:19 UTC", "hours_back": 72, "total_tweets": 12, "active_experts": 5, "topics_count": 4}, "all_tweets": [{"id": "s5", "text_html": "Sites hit by the HCU (Helpful Content Update) are NOT recovering with the latest core update. Google has confirmed these are separate systems. Recovery path remains unclear. <a href=\"https://x.com/hashtag/GoogleUpdate\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#GoogleUpdate</a> <a href=\"https://x.com/hashtag/HCU\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#HCU</a> <a href=\"https://x.com/hashtag/SEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#SEO</a>", "text_raw": "Sites hit by the HCU (Helpful Content Update) are NOT recovering with the latest core update. Google has confirmed these are separate systems. Recovery path remains unclear. #GoogleUpdate #HCU #SEO", "created_at": "2025-06-05T09:30:00Z", "time_ago": "364d ago", "url": "https://x.com/lilyraynyc/status/s5", "author": {"id": "105", "name": "Lily Ray", "username": "lilyraynyc", "avatar_url": "", "initials": "LR", "verified": false, "followers": "72.0K", "url": "https://x.com/lilyraynyc"}, "metrics": {"likes": "3.4K", "retweets": "1.1K", "replies": "290", "views": "180.0K", "likes_raw": 3400, "retweets_raw": 1100, "engagement": 5890}, "_source": "topic", "_category": "🔄 Google Updates"}, {"id": "s3", "text_html": "GEO (Generative Engine Optimization) fundamentals: 1/ Cite authoritative sources 2/ Use clear, structured language 3/ Define entities explicitly 4/ Build topical authority 5/ Get mentioned in training data. The game has changed. <a href=\"https://x.com/hashtag/GEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#GEO</a> <a href=\"https://x.com/hashtag/AISEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#AISEO</a>", "text_raw": "GEO (Generative Engine Optimization) fundamentals: 1/ Cite authoritative sources 2/ Use clear, structured language 3/ Define entities explicitly 4/ Build topical authority 5/ Get mentioned in training data. The game has changed. #GEO #AISEO", "created_at": "2025-06-05T08:00:00Z", "time_ago": "365d ago", "url": "https://x.com/GaelBreton/status/s3", "author": {"id": "103", "name": "Gael Breton", "username": "GaelBreton", "avatar_url": "", "initials": "GB", "verified": false, "followers": "34.0K", "url": "https://x.com/GaelBreton"}, "metrics": {"likes": "2.1K", "retweets": "678", "replies": "156", "views": "98.0K", "likes_raw": 2100, "retweets_raw": 678, "engagement": 3612}, "_source": "topic", "_category": "🤖 AI SEO & GEO"}, {"id": "t3", "text_html": "BREAKING: Google confirms a broad core algorithm update started rolling out today. Early signals show significant volatility in SERPs. Watch your rankings closely. searchengineland.com <a href=\"https://x.com/hashtag/GoogleUpdate\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#GoogleUpdate</a> <a href=\"https://x.com/hashtag/SEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#SEO</a>", "text_raw": "BREAKING: Google confirms a broad core algorithm update started rolling out today. Early signals show significant volatility in SERPs. Watch your rankings closely. searchengineland.com #GoogleUpdate #SEO", "created_at": "2025-06-05T07:45:00Z", "time_ago": "365d ago", "url": "https://x.com/rustybrick/status/t3", "author": {"id": "2", "name": "Barry Schwartz", "username": "rustybrick", "avatar_url": "", "initials": "BS", "verified": false, "followers": "105.0K", "url": "https://x.com/rustybrick"}, "metrics": {"likes": "3.2K", "retweets": "890", "replies": "234", "views": "125.0K", "likes_raw": 3200, "retweets_raw": 890, "engagement": 5214}, "_source": "expert", "_category": "Expert Picks"}, {"id": "s1", "text_html": "New study: 68% of Google searches now end without a click. Zero-click searches are accelerating with AI Overviews. Time to rethink your SEO KPIs. <a href=\"https://x.com/hashtag/SEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#SEO</a> <a href=\"https://x.com/hashtag/ZeroClick\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#ZeroClick</a>", "text_raw": "New study: 68% of Google searches now end without a click. Zero-click searches are accelerating with AI Overviews. Time to rethink your SEO KPIs. #SEO #ZeroClick", "created_at": "2025-06-05T06:00:00Z", "time_ago": "365d ago", "url": "https://x.com/CyrusShepard/status/s1", "author": {"id": "101", "name": "Cyrus Shepard", "username": "CyrusShepard", "avatar_url": "", "initials": "CS", "verified": false, "followers": "85.0K", "url": "https://x.com/CyrusShepard"}, "metrics": {"likes": "890", "retweets": "234", "replies": "78", "views": "42.0K", "likes_raw": 890, "retweets_raw": 234, "engagement": 1436}, "_source": "topic", "_category": "🔍 SEO Updates"}, {"id": "s2", "text_html": "Parasite SEO is still working in 2025 but Google is getting better at catching it. The risk vs reward calculation has shifted significantly. <a href=\"https://x.com/hashtag/ParasiteSEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#ParasiteSEO</a> <a href=\"https://x.com/hashtag/SEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#SEO</a>", "text_raw": "Parasite SEO is still working in 2025 but Google is getting better at catching it. The risk vs reward calculation has shifted significantly. #ParasiteSEO #SEO", "created_at": "2025-06-04T18:00:00Z", "time_ago": "365d ago", "url": "https://x.com/glenngabe/status/s2", "author": {"id": "102", "name": "Glen Gabe", "username": "glenngabe", "avatar_url": "", "initials": "GG", "verified": false, "followers": "42.0K", "url": "https://x.com/glenngabe"}, "metrics": {"likes": "450", "retweets": "123", "replies": "45", "views": "18.0K", "likes_raw": 450, "retweets_raw": 123, "engagement": 741}, "_source": "topic", "_category": "🔍 SEO Updates"}, {"id": "t4", "text_html": "New analysis of 1,000 sites hit by the recent Google update: sites with thin AI-generated content lost an average of 43% of organic traffic. Original, expert-driven content continues to outperform. Full study → <a href=\"https://x.com/hashtag/GoogleUpdate\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#GoogleUpdate</a> <a href=\"https://x.com/hashtag/SEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#SEO</a> <a href=\"https://x.com/hashtag/ContentMarketing\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#ContentMarketing</a>", "text_raw": "New analysis of 1,000 sites hit by the recent Google update: sites with thin AI-generated content lost an average of 43% of organic traffic. Original, expert-driven content continues to outperform. Full study → #GoogleUpdate #SEO #ContentMarketing", "created_at": "2025-06-04T16:20:00Z", "time_ago": "365d ago", "url": "https://x.com/lilyraynyc/status/t4", "author": {"id": "3", "name": "Lily Ray", "username": "lilyraynyc", "avatar_url": "", "initials": "LR", "verified": false, "followers": "72.0K", "url": "https://x.com/lilyraynyc"}, "metrics": {"likes": "4.1K", "retweets": "1.2K", "replies": "345", "views": "210.0K", "likes_raw": 4100, "retweets_raw": 1200, "engagement": 6845}, "_source": "expert", "_category": "Expert Picks"}, {"id": "s4", "text_html": "ChatGPT Search market share is growing but still a fraction of Google. Do not abandon traditional SEO for pure GEO. Optimize for both. The 80/20 rule still applies. <a href=\"https://x.com/hashtag/AISEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#AISEO</a> <a href=\"https://x.com/hashtag/ChatGPT\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#ChatGPT</a> <a href=\"https://x.com/hashtag/SEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#SEO</a>", "text_raw": "ChatGPT Search market share is growing but still a fraction of Google. Do not abandon traditional SEO for pure GEO. Optimize for both. The 80/20 rule still applies. #AISEO #ChatGPT #SEO", "created_at": "2025-06-04T15:30:00Z", "time_ago": "365d ago", "url": "https://x.com/timsoulo/status/s4", "author": {"id": "104", "name": "Tim Soulo", "username": "timsoulo", "avatar_url": "", "initials": "TS", "verified": false, "followers": "44.0K", "url": "https://x.com/timsoulo"}, "metrics": {"likes": "1.3K", "retweets": "345", "replies": "89", "views": "67.0K", "likes_raw": 1340, "retweets_raw": 345, "engagement": 2119}, "_source": "topic", "_category": "🤖 AI SEO & GEO"}, {"id": "t1", "text_html": "AI Overviews are reshaping SEO fundamentally. GEO (Generative Engine Optimization) is now a real discipline you need to master alongside traditional SEO. Here are my top 5 strategies for 2025... <a href=\"https://x.com/hashtag/SEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#SEO</a> <a href=\"https://x.com/hashtag/AIOverviews\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#AIOverviews</a> <a href=\"https://x.com/hashtag/GEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#GEO</a>", "text_raw": "AI Overviews are reshaping SEO fundamentally. GEO (Generative Engine Optimization) is now a real discipline you need to master alongside traditional SEO. Here are my top 5 strategies for 2025... #SEO #AIOverviews #GEO", "created_at": "2025-06-04T14:30:00Z", "time_ago": "365d ago", "url": "https://x.com/randfish/status/t1", "author": {"id": "1", "name": "Rand Fishkin", "username": "randfish", "avatar_url": "", "initials": "RF", "verified": false, "followers": "458.0K", "url": "https://x.com/randfish"}, "metrics": {"likes": "2.3K", "retweets": "456", "replies": "123", "views": "85.0K", "likes_raw": 2340, "retweets_raw": 456, "engagement": 3375}, "_source": "expert", "_category": "Expert Picks"}, {"id": "s6", "text_html": "Core Web Vitals update: INP (Interaction to Next Paint) is now the most failed CWV metric. If your INP is above 200ms you are leaving rankings on the table. Use Chrome DevTools to debug. <a href=\"https://x.com/hashtag/CoreWebVitals\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#CoreWebVitals</a> <a href=\"https://x.com/hashtag/TechnicalSEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#TechnicalSEO</a> <a href=\"https://x.com/hashtag/INP\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#INP</a>", "text_raw": "Core Web Vitals update: INP (Interaction to Next Paint) is now the most failed CWV metric. If your INP is above 200ms you are leaving rankings on the table. Use Chrome DevTools to debug. #CoreWebVitals #TechnicalSEO #INP", "created_at": "2025-06-04T11:00:00Z", "time_ago": "365d ago", "url": "https://x.com/danielwaisberg/status/s6", "author": {"id": "106", "name": "Daniel Waisberg", "username": "danielwaisberg", "avatar_url": "", "initials": "DW", "verified": false, "followers": "19.0K", "url": "https://x.com/danielwaisberg"}, "metrics": {"likes": "980", "retweets": "267", "replies": "78", "views": "38.0K", "likes_raw": 980, "retweets_raw": 267, "engagement": 1592}, "_source": "topic", "_category": "📊 Technical SEO"}, {"id": "t6", "text_html": "International SEO tip: Use hreflang correctly or not at all. Wrong hreflang is worse than no hreflang. Seeing too many sites with self-referencing hreflang errors causing index issues. Here is how to audit... <a href=\"https://x.com/hashtag/SEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#SEO</a> <a href=\"https://x.com/hashtag/InternationalSEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#InternationalSEO</a>", "text_raw": "International SEO tip: Use hreflang correctly or not at all. Wrong hreflang is worse than no hreflang. Seeing too many sites with self-referencing hreflang errors causing index issues. Here is how to audit... #SEO #InternationalSEO", "created_at": "2025-06-04T08:30:00Z", "time_ago": "366d ago", "url": "https://x.com/aleyda/status/t6", "author": {"id": "5", "name": "Aleyda Solis", "username": "aleyda", "avatar_url": "", "initials": "AS", "verified": false, "followers": "123.0K", "url": "https://x.com/aleyda"}, "metrics": {"likes": "1.2K", "retweets": "280", "replies": "67", "views": "45.0K", "likes_raw": 1200, "retweets_raw": 280, "engagement": 1827}, "_source": "expert", "_category": "Expert Picks"}, {"id": "t5", "text_html": "A reminder that Google does not have a &quot;quality score&quot; for websites. We evaluate pages/content, not domains as a whole. Site-wide penalties exist for manual actions though. <a href=\"https://x.com/hashtag/GoogleSearch\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#GoogleSearch</a> <a href=\"https://x.com/hashtag/SEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#SEO</a>", "text_raw": "A reminder that Google does not have a \"quality score\" for websites. We evaluate pages/content, not domains as a whole. Site-wide penalties exist for manual actions though. #GoogleSearch #SEO", "created_at": "2025-06-03T12:00:00Z", "time_ago": "366d ago", "url": "https://x.com/JohnMu/status/t5", "author": {"id": "4", "name": "John Mueller", "username": "JohnMu", "avatar_url": "", "initials": "JM", "verified": false, "followers": "206.0K", "url": "https://x.com/JohnMu"}, "metrics": {"likes": "5.6K", "retweets": "1.4K", "replies": "567", "views": "380.0K", "likes_raw": 5600, "retweets_raw": 1450, "engagement": 9067}, "_source": "expert", "_category": "Expert Picks"}, {"id": "t2", "text_html": "Three things I keep seeing go wrong with AI-first SEO strategies: 1/ Ignoring brand search 2/ Not optimizing for answer engines 3/ Chasing rankings over share of voice. Thread 🧵 <a href=\"https://x.com/hashtag/SEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#SEO</a>", "text_raw": "Three things I keep seeing go wrong with AI-first SEO strategies: 1/ Ignoring brand search 2/ Not optimizing for answer engines 3/ Chasing rankings over share of voice. Thread 🧵 #SEO", "created_at": "2025-06-03T09:15:00Z", "time_ago": "367d ago", "url": "https://x.com/randfish/status/t2", "author": {"id": "1", "name": "Rand Fishkin", "username": "randfish", "avatar_url": "", "initials": "RF", "verified": false, "followers": "458.0K", "url": "https://x.com/randfish"}, "metrics": {"likes": "1.9K", "retweets": "312", "replies": "89", "views": "62.0K", "likes_raw": 1890, "retweets_raw": 312, "engagement": 2603}, "_source": "expert", "_category": "Expert Picks"}], "expert_sections": [{"username": "randfish", "name": "Rand Fishkin", "avatar_url": "https://pbs.twimg.com/profile_images/1589815970367000576/9xrEFi5J_bigger.jpg", "initials": "RF", "followers": "458.0K", "url": "https://x.com/randfish", "tweets": [{"id": "t1", "text_html": "AI Overviews are reshaping SEO fundamentally. GEO (Generative Engine Optimization) is now a real discipline you need to master alongside traditional SEO. Here are my top 5 strategies for 2025... <a href=\"https://x.com/hashtag/SEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#SEO</a> <a href=\"https://x.com/hashtag/AIOverviews\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#AIOverviews</a> <a href=\"https://x.com/hashtag/GEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#GEO</a>", "text_raw": "AI Overviews are reshaping SEO fundamentally. GEO (Generative Engine Optimization) is now a real discipline you need to master alongside traditional SEO. Here are my top 5 strategies for 2025... #SEO #AIOverviews #GEO", "created_at": "2025-06-04T14:30:00Z", "time_ago": "365d ago", "url": "https://x.com/randfish/status/t1", "author": {"id": "1", "name": "Rand Fishkin", "username": "randfish", "avatar_url": "", "initials": "RF", "verified": false, "followers": "458.0K", "url": "https://x.com/randfish"}, "metrics": {"likes": "2.3K", "retweets": "456", "replies": "123", "views": "85.0K", "likes_raw": 2340, "retweets_raw": 456, "engagement": 3375}, "_source": "expert", "_category": "Expert Picks"}, {"id": "t2", "text_html": "Three things I keep seeing go wrong with AI-first SEO strategies: 1/ Ignoring brand search 2/ Not optimizing for answer engines 3/ Chasing rankings over share of voice. Thread 🧵 <a href=\"https://x.com/hashtag/SEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#SEO</a>", "text_raw": "Three things I keep seeing go wrong with AI-first SEO strategies: 1/ Ignoring brand search 2/ Not optimizing for answer engines 3/ Chasing rankings over share of voice. Thread 🧵 #SEO", "created_at": "2025-06-03T09:15:00Z", "time_ago": "367d ago", "url": "https://x.com/randfish/status/t2", "author": {"id": "1", "name": "Rand Fishkin", "username": "randfish", "avatar_url": "", "initials": "RF", "verified": false, "followers": "458.0K", "url": "https://x.com/randfish"}, "metrics": {"likes": "1.9K", "retweets": "312", "replies": "89", "views": "62.0K", "likes_raw": 1890, "retweets_raw": 312, "engagement": 2603}, "_source": "expert", "_category": "Expert Picks"}], "tweet_count": 2}, {"username": "rustybrick", "name": "Barry Schwartz", "avatar_url": "https://pbs.twimg.com/profile_images/1640766892339531776/0yLzMOE0_bigger.jpg", "initials": "BS", "followers": "105.0K", "url": "https://x.com/rustybrick", "tweets": [{"id": "t3", "text_html": "BREAKING: Google confirms a broad core algorithm update started rolling out today. Early signals show significant volatility in SERPs. Watch your rankings closely. searchengineland.com <a href=\"https://x.com/hashtag/GoogleUpdate\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#GoogleUpdate</a> <a href=\"https://x.com/hashtag/SEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#SEO</a>", "text_raw": "BREAKING: Google confirms a broad core algorithm update started rolling out today. Early signals show significant volatility in SERPs. Watch your rankings closely. searchengineland.com #GoogleUpdate #SEO", "created_at": "2025-06-05T07:45:00Z", "time_ago": "365d ago", "url": "https://x.com/rustybrick/status/t3", "author": {"id": "2", "name": "Barry Schwartz", "username": "rustybrick", "avatar_url": "", "initials": "BS", "verified": false, "followers": "105.0K", "url": "https://x.com/rustybrick"}, "metrics": {"likes": "3.2K", "retweets": "890", "replies": "234", "views": "125.0K", "likes_raw": 3200, "retweets_raw": 890, "engagement": 5214}, "_source": "expert", "_category": "Expert Picks"}], "tweet_count": 1}, {"username": "lilyraynyc", "name": "Lily Ray", "avatar_url": "", "initials": "LR", "followers": "72.0K", "url": "https://x.com/lilyraynyc", "tweets": [{"id": "t4", "text_html": "New analysis of 1,000 sites hit by the recent Google update: sites with thin AI-generated content lost an average of 43% of organic traffic. Original, expert-driven content continues to outperform. Full study → <a href=\"https://x.com/hashtag/GoogleUpdate\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#GoogleUpdate</a> <a href=\"https://x.com/hashtag/SEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#SEO</a> <a href=\"https://x.com/hashtag/ContentMarketing\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#ContentMarketing</a>", "text_raw": "New analysis of 1,000 sites hit by the recent Google update: sites with thin AI-generated content lost an average of 43% of organic traffic. Original, expert-driven content continues to outperform. Full study → #GoogleUpdate #SEO #ContentMarketing", "created_at": "2025-06-04T16:20:00Z", "time_ago": "365d ago", "url": "https://x.com/lilyraynyc/status/t4", "author": {"id": "3", "name": "Lily Ray", "username": "lilyraynyc", "avatar_url": "", "initials": "LR", "verified": false, "followers": "72.0K", "url": "https://x.com/lilyraynyc"}, "metrics": {"likes": "4.1K", "retweets": "1.2K", "replies": "345", "views": "210.0K", "likes_raw": 4100, "retweets_raw": 1200, "engagement": 6845}, "_source": "expert", "_category": "Expert Picks"}], "tweet_count": 1}, {"username": "JohnMu", "name": "John Mueller", "avatar_url": "https://pbs.twimg.com/profile_images/3726565567/b6fd0a0bf3b15d1c5c0c40f5f41ee5ac_bigger.jpg", "initials": "JM", "followers": "206.0K", "url": "https://x.com/JohnMu", "tweets": [{"id": "t5", "text_html": "A reminder that Google does not have a &quot;quality score&quot; for websites. We evaluate pages/content, not domains as a whole. Site-wide penalties exist for manual actions though. <a href=\"https://x.com/hashtag/GoogleSearch\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#GoogleSearch</a> <a href=\"https://x.com/hashtag/SEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#SEO</a>", "text_raw": "A reminder that Google does not have a \"quality score\" for websites. We evaluate pages/content, not domains as a whole. Site-wide penalties exist for manual actions though. #GoogleSearch #SEO", "created_at": "2025-06-03T12:00:00Z", "time_ago": "366d ago", "url": "https://x.com/JohnMu/status/t5", "author": {"id": "4", "name": "John Mueller", "username": "JohnMu", "avatar_url": "", "initials": "JM", "verified": false, "followers": "206.0K", "url": "https://x.com/JohnMu"}, "metrics": {"likes": "5.6K", "retweets": "1.4K", "replies": "567", "views": "380.0K", "likes_raw": 5600, "retweets_raw": 1450, "engagement": 9067}, "_source": "expert", "_category": "Expert Picks"}], "tweet_count": 1}, {"username": "aleyda", "name": "Aleyda Solis", "avatar_url": "", "initials": "AS", "followers": "123.0K", "url": "https://x.com/aleyda", "tweets": [{"id": "t6", "text_html": "International SEO tip: Use hreflang correctly or not at all. Wrong hreflang is worse than no hreflang. Seeing too many sites with self-referencing hreflang errors causing index issues. Here is how to audit... <a href=\"https://x.com/hashtag/SEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#SEO</a> <a href=\"https://x.com/hashtag/InternationalSEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#InternationalSEO</a>", "text_raw": "International SEO tip: Use hreflang correctly or not at all. Wrong hreflang is worse than no hreflang. Seeing too many sites with self-referencing hreflang errors causing index issues. Here is how to audit... #SEO #InternationalSEO", "created_at": "2025-06-04T08:30:00Z", "time_ago": "366d ago", "url": "https://x.com/aleyda/status/t6", "author": {"id": "5", "name": "Aleyda Solis", "username": "aleyda", "avatar_url": "", "initials": "AS", "verified": false, "followers": "123.0K", "url": "https://x.com/aleyda"}, "metrics": {"likes": "1.2K", "retweets": "280", "replies": "67", "views": "45.0K", "likes_raw": 1200, "retweets_raw": 280, "engagement": 1827}, "_source": "expert", "_category": "Expert Picks"}], "tweet_count": 1}], "topic_sections": [{"label": "🔍 SEO Updates", "emoji": "🔍", "color": "#4f9cf9", "query": "SEO", "tweets": [{"id": "s1", "text_html": "New study: 68% of Google searches now end without a click. Zero-click searches are accelerating with AI Overviews. Time to rethink your SEO KPIs. <a href=\"https://x.com/hashtag/SEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#SEO</a> <a href=\"https://x.com/hashtag/ZeroClick\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#ZeroClick</a>", "text_raw": "New study: 68% of Google searches now end without a click. Zero-click searches are accelerating with AI Overviews. Time to rethink your SEO KPIs. #SEO #ZeroClick", "created_at": "2025-06-05T06:00:00Z", "time_ago": "365d ago", "url": "https://x.com/CyrusShepard/status/s1", "author": {"id": "101", "name": "Cyrus Shepard", "username": "CyrusShepard", "avatar_url": "", "initials": "CS", "verified": false, "followers": "85.0K", "url": "https://x.com/CyrusShepard"}, "metrics": {"likes": "890", "retweets": "234", "replies": "78", "views": "42.0K", "likes_raw": 890, "retweets_raw": 234, "engagement": 1436}, "_source": "topic", "_category": "🔍 SEO Updates"}, {"id": "s2", "text_html": "Parasite SEO is still working in 2025 but Google is getting better at catching it. The risk vs reward calculation has shifted significantly. <a href=\"https://x.com/hashtag/ParasiteSEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#ParasiteSEO</a> <a href=\"https://x.com/hashtag/SEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#SEO</a>", "text_raw": "Parasite SEO is still working in 2025 but Google is getting better at catching it. The risk vs reward calculation has shifted significantly. #ParasiteSEO #SEO", "created_at": "2025-06-04T18:00:00Z", "time_ago": "365d ago", "url": "https://x.com/glenngabe/status/s2", "author": {"id": "102", "name": "Glen Gabe", "username": "glenngabe", "avatar_url": "", "initials": "GG", "verified": false, "followers": "42.0K", "url": "https://x.com/glenngabe"}, "metrics": {"likes": "450", "retweets": "123", "replies": "45", "views": "18.0K", "likes_raw": 450, "retweets_raw": 123, "engagement": 741}, "_source": "topic", "_category": "🔍 SEO Updates"}], "tweet_count": 2}, {"label": "🤖 AI SEO & GEO", "emoji": "🤖", "color": "#a855f7", "query": "AI SEO", "tweets": [{"id": "s3", "text_html": "GEO (Generative Engine Optimization) fundamentals: 1/ Cite authoritative sources 2/ Use clear, structured language 3/ Define entities explicitly 4/ Build topical authority 5/ Get mentioned in training data. The game has changed. <a href=\"https://x.com/hashtag/GEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#GEO</a> <a href=\"https://x.com/hashtag/AISEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#AISEO</a>", "text_raw": "GEO (Generative Engine Optimization) fundamentals: 1/ Cite authoritative sources 2/ Use clear, structured language 3/ Define entities explicitly 4/ Build topical authority 5/ Get mentioned in training data. The game has changed. #GEO #AISEO", "created_at": "2025-06-05T08:00:00Z", "time_ago": "365d ago", "url": "https://x.com/GaelBreton/status/s3", "author": {"id": "103", "name": "Gael Breton", "username": "GaelBreton", "avatar_url": "", "initials": "GB", "verified": false, "followers": "34.0K", "url": "https://x.com/GaelBreton"}, "metrics": {"likes": "2.1K", "retweets": "678", "replies": "156", "views": "98.0K", "likes_raw": 2100, "retweets_raw": 678, "engagement": 3612}, "_source": "topic", "_category": "🤖 AI SEO & GEO"}, {"id": "s4", "text_html": "ChatGPT Search market share is growing but still a fraction of Google. Do not abandon traditional SEO for pure GEO. Optimize for both. The 80/20 rule still applies. <a href=\"https://x.com/hashtag/AISEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#AISEO</a> <a href=\"https://x.com/hashtag/ChatGPT\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#ChatGPT</a> <a href=\"https://x.com/hashtag/SEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#SEO</a>", "text_raw": "ChatGPT Search market share is growing but still a fraction of Google. Do not abandon traditional SEO for pure GEO. Optimize for both. The 80/20 rule still applies. #AISEO #ChatGPT #SEO", "created_at": "2025-06-04T15:30:00Z", "time_ago": "365d ago", "url": "https://x.com/timsoulo/status/s4", "author": {"id": "104", "name": "Tim Soulo", "username": "timsoulo", "avatar_url": "", "initials": "TS", "verified": false, "followers": "44.0K", "url": "https://x.com/timsoulo"}, "metrics": {"likes": "1.3K", "retweets": "345", "replies": "89", "views": "67.0K", "likes_raw": 1340, "retweets_raw": 345, "engagement": 2119}, "_source": "topic", "_category": "🤖 AI SEO & GEO"}], "tweet_count": 2}, {"label": "🔄 Google Updates", "emoji": "🔄", "color": "#10b981", "query": "Google Update", "tweets": [{"id": "s5", "text_html": "Sites hit by the HCU (Helpful Content Update) are NOT recovering with the latest core update. Google has confirmed these are separate systems. Recovery path remains unclear. <a href=\"https://x.com/hashtag/GoogleUpdate\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#GoogleUpdate</a> <a href=\"https://x.com/hashtag/HCU\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#HCU</a> <a href=\"https://x.com/hashtag/SEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#SEO</a>", "text_raw": "Sites hit by the HCU (Helpful Content Update) are NOT recovering with the latest core update. Google has confirmed these are separate systems. Recovery path remains unclear. #GoogleUpdate #HCU #SEO", "created_at": "2025-06-05T09:30:00Z", "time_ago": "364d ago", "url": "https://x.com/lilyraynyc/status/s5", "author": {"id": "105", "name": "Lily Ray", "username": "lilyraynyc", "avatar_url": "", "initials": "LR", "verified": false, "followers": "72.0K", "url": "https://x.com/lilyraynyc"}, "metrics": {"likes": "3.4K", "retweets": "1.1K", "replies": "290", "views": "180.0K", "likes_raw": 3400, "retweets_raw": 1100, "engagement": 5890}, "_source": "topic", "_category": "🔄 Google Updates"}], "tweet_count": 1}, {"label": "📊 Technical SEO", "emoji": "📊", "color": "#f59e0b", "query": "Technical SEO", "tweets": [{"id": "s6", "text_html": "Core Web Vitals update: INP (Interaction to Next Paint) is now the most failed CWV metric. If your INP is above 200ms you are leaving rankings on the table. Use Chrome DevTools to debug. <a href=\"https://x.com/hashtag/CoreWebVitals\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#CoreWebVitals</a> <a href=\"https://x.com/hashtag/TechnicalSEO\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#TechnicalSEO</a> <a href=\"https://x.com/hashtag/INP\" target=\"_blank\" rel=\"noopener\" class=\"tweet-hashtag\">#INP</a>", "text_raw": "Core Web Vitals update: INP (Interaction to Next Paint) is now the most failed CWV metric. If your INP is above 200ms you are leaving rankings on the table. Use Chrome DevTools to debug. #CoreWebVitals #TechnicalSEO #INP", "created_at": "2025-06-04T11:00:00Z", "time_ago": "365d ago", "url": "https://x.com/danielwaisberg/status/s6", "author": {"id": "106", "name": "Daniel Waisberg", "username": "danielwaisberg", "avatar_url": "", "initials": "DW", "verified": false, "followers": "19.0K", "url": "https://x.com/danielwaisberg"}, "metrics": {"likes": "980", "retweets": "267", "replies": "78", "views": "38.0K", "likes_raw": 980, "retweets_raw": 267, "engagement": 1592}, "_source": "topic", "_category": "📊 Technical SEO"}], "tweet_count": 1}]};
+</script>
+
+<!-- ── App logic ── -->
+<script>
+/* ─── State ─────────────────────────────────────────────────── */
+let currentSort   = 'newest';
+let currentSearch = '';
+
+/* ─── Utilities ─────────────────────────────────────────────── */
+function avatarEl(author) {
+  if (author.avatar_url) {
+    return `<img class="avatar" src="${author.avatar_url}" alt="${author.name}"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="avatar-placeholder" style="display:none">${author.initials}</div>`;
+  }
+  return `<div class="avatar-placeholder">${author.initials}</div>`;
+}
+
+function tweetCard(t) {
+  const category = t._category || '';
+  return `
+  <article class="tweet-card" onclick="window.open('${t.url}','_blank')">
+    <div class="tweet-header">
+      <a href="${t.author.url}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="display:flex;align-items:center">
+        ${avatarEl(t.author)}
+      </a>
+      <div class="tweet-author">
+        <div class="author-name">${escHtml(t.author.name)}</div>
+        <div class="author-handle">@${t.author.username}</div>
+      </div>
+      <span class="tweet-time" title="${t.created_at}">${t.time_ago}</span>
+    </div>
+    <div class="tweet-body">${t.text_html}</div>
+    <div class="tweet-footer">
+      <span class="metric">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.751 10c0-4.42 3.584-8 8.005-8h4.366c4.49 0 7.501 4.435 5.37 8.392L15.648 20H5.748L1.751 10z"/></svg>
+        ${t.metrics.replies}
+      </span>
+      <span class="metric">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.75 3.79l4.603 4.3-1.706 1.82L6 8.38v7.37c0 .97.784 1.75 1.75 1.75H13V19.5H7.75C5.683 19.5 4 17.817 4 15.75V8.38L2.353 9.91.647 8.09l4.103-4.3zm11.5 2.71H11V4h5.25c2.067 0 3.75 1.683 3.75 3.75v7.37l1.647-1.53 1.706 1.82-4.603 4.3-4.103-4.3 1.706-1.82L18 14.62V7.25c0-.97-.784-1.75-1.75-1.75z"/></svg>
+        ${t.metrics.retweets}
+      </span>
+      <span class="metric">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.697 5.5c-1.222-.06-2.679.51-3.89 2.16l-.805 1.09-.806-1.09C9.984 6.01 8.526 5.44 7.304 5.5c-1.243.07-2.349.78-2.91 1.91-.552 1.12-.633 2.78.479 4.82 1.074 1.97 3.257 4.27 7.129 6.61 3.87-2.34 6.052-4.64 7.126-6.61 1.111-2.04 1.03-3.7.477-4.82-.561-1.13-1.666-1.84-2.908-1.91zm4.187 7.69c-1.351 2.48-4.001 5.12-8.379 7.67l-.503.3-.504-.3c-4.379-2.55-7.029-5.19-8.382-7.67-1.36-2.5-1.41-4.86-.514-6.67.887-1.79 2.647-2.91 4.601-3.01 1.651-.09 3.368.56 4.798 2.01 1.429-1.45 3.146-2.1 4.796-2.01 1.954.1 3.714 1.22 4.601 3.01.896 1.81.846 4.17-.514 6.67z"/></svg>
+        ${t.metrics.likes}
+      </span>
+      ${t.metrics.views && t.metrics.views !== '0' ? `
+      <span class="metric">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+        ${t.metrics.views}
+      </span>` : ''}
+      ${category ? `<span class="category-badge">${category}</span>` : ''}
+    </div>
+  </article>`;
+}
+
+function escHtml(s) {
+  return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ─── Sort & filter ──────────────────────────────────────────── */
+function setSort(btn) {
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentSort = btn.dataset.sort;
+  renderAll();
+}
+
+function sortTweets(arr) {
+  if (currentSort === 'top') {
+    return [...arr].sort((a,b) => b.metrics.engagement - a.metrics.engagement);
+  }
+  return [...arr].sort((a,b) => (b.created_at > a.created_at ? 1 : -1));
+}
+
+function matchesSearch(t) {
+  if (!currentSearch) return true;
+  const q = currentSearch.toLowerCase();
+  return (
+    (t.text_raw || '').toLowerCase().includes(q) ||
+    (t.author.username || '').toLowerCase().includes(q) ||
+    (t.author.name || '').toLowerCase().includes(q) ||
+    (t._category || '').toLowerCase().includes(q)
+  );
+}
+
+/* ─── Render: All ────────────────────────────────────────────── */
+function renderAll() {
+  const filtered = sortTweets(DATA.all_tweets.filter(matchesSearch));
+  const grid     = document.getElementById('all-grid');
+  const empty    = document.getElementById('all-empty');
+  if (!filtered.length) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = filtered.map(tweetCard).join('');
+}
+
+/* ─── Render: Experts ────────────────────────────────────────── */
+function renderExperts() {
+  const container = document.getElementById('experts-container');
+  let html = '';
+  for (const exp of DATA.expert_sections) {
+    if (!exp.tweets.length) continue;
+    const filtered = exp.tweets.filter(matchesSearch);
+    if (!filtered.length && currentSearch) continue;
+    const avEl = exp.avatar_url
+      ? `<img class="expert-avatar" src="${exp.avatar_url}" alt="${exp.name}"
+             onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+         <div class="expert-avatar-ph" style="display:none">${exp.initials}</div>`
+      : `<div class="expert-avatar-ph">${exp.initials}</div>`;
+
+    html += `
+    <div class="expert-section">
+      <div class="expert-header" onclick="toggleExpert(this)">
+        <a href="${exp.url}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="display:flex;align-items:center">
+          ${avEl}
+        </a>
+        <div class="expert-info">
+          <div class="expert-name">${escHtml(exp.name)}</div>
+          <div class="expert-sub">@${exp.username} · ${exp.followers} followers</div>
+        </div>
+        <div class="expert-count">${exp.tweet_count} tweet${exp.tweet_count===1?'':'s'} ▾</div>
+      </div>
+      <div class="expert-tweets tweet-grid">
+        ${filtered.map(tweetCard).join('')}
+      </div>
+    </div>`;
+  }
+  if (!html) {
+    html = `<div class="empty"><div class="e-icon">👥</div><div>No expert tweets found.</div></div>`;
+  }
+  container.innerHTML = html;
+}
+
+function toggleExpert(header) {
+  const tweets = header.nextElementSibling;
+  tweets.classList.toggle('open');
+  const btn = header.querySelector('.expert-count');
+  btn.textContent = btn.textContent.replace(/[▾▴]/, tweets.classList.contains('open') ? '▴' : '▾');
+}
+
+/* ─── Render: Topics ─────────────────────────────────────────── */
+function renderTopics() {
+  const container = document.getElementById('topics-container');
+  let html = '';
+  for (const topic of DATA.topic_sections) {
+    const filtered = sortTweets(topic.tweets.filter(matchesSearch));
+    if (!filtered.length && currentSearch) continue;
+    html += `
+    <div class="topic-section">
+      <div class="topic-header">
+        <span class="topic-dot" style="background:${topic.color}"></span>
+        <span class="topic-label">${topic.label}</span>
+        <span class="topic-count">${filtered.length} tweet${filtered.length===1?'':'s'}</span>
+      </div>
+      <div class="topic-body tweet-grid">
+        ${filtered.length
+          ? filtered.map(tweetCard).join('')
+          : '<div class="empty" style="width:100%"><div class="e-icon">🔍</div><div>No tweets found.</div></div>'}
+      </div>
+    </div>`;
+  }
+  if (!html) {
+    html = `<div class="empty"><div class="e-icon">🔍</div><div>No topic tweets found.</div></div>`;
+  }
+  container.innerHTML = html;
+}
+
+/* ─── Tabs ───────────────────────────────────────────────────── */
+const TABS = {
+  all:     () => renderAll(),
+  experts: () => renderExperts(),
+  topics:  () => renderTopics(),
+};
+
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', ['all','experts','topics'][i] === name);
+  });
+  document.querySelectorAll('.panel').forEach((p,i) => {
+    p.classList.toggle('active', ['panel-all','panel-experts','panel-topics'][i] === `panel-${name}`);
+  });
+  TABS[name]();
+}
+
+/* ─── Search ─────────────────────────────────────────────────── */
+let searchTimer;
+document.getElementById('searchInput').addEventListener('input', function() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    currentSearch = this.value.trim();
+    // Re-render whichever panel is active
+    const active = document.querySelector('.panel.active');
+    if (active.id === 'panel-all')     renderAll();
+    if (active.id === 'panel-experts') renderExperts();
+    if (active.id === 'panel-topics')  renderTopics();
+  }, 200);
+});
+
+/* ─── Boot ───────────────────────────────────────────────────── */
+renderAll();
+</script>
+</body>
+</html>
